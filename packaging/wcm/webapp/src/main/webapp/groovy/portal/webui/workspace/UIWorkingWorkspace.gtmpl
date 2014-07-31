@@ -61,7 +61,6 @@
 
 <%
 def jsManager = rcontext.getJavascriptManager();
-jsManager.require("SHARED/wcm-utils", "wcmutils").addScripts("wcmutils.WCMUtils.pingUserStatus();");
 if (rcontext.getRemoteUser() != null && WCMComposer.MODE_EDIT.equals(Utils.getCurrentMode())) {
    
   %>
