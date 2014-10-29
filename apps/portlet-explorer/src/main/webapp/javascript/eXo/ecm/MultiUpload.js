@@ -900,9 +900,33 @@
 		  	  //change uploaded files value
 		  	  eXo.ecm.MultiUpload.changeStatusValue(eXo.ecm.MultiUpload.UPLOADED, 1);
 		  	  //load image thumbnail
+			  var fileName = cleanName(file.name);
+			  var uri = eXo.ecm.MultiUpload.restContext + "/wcmDriver/uploadFile/cleanName?" + "fileName=" + fileName;
+			  gj.ajax({url: uri, 
+			    async: false, //blocks window close
+			    dataType: (gj.browser.msie) ? "text" : "xml",
+			    accepts: {
+			      xml: "text/xml",
+			      text: "text/xml"
+			    },
+			    success: function(result, status, xhr) {
+			      var xml;
+			      if (gj.browser.msie) {
+			        xml = new ActiveXObject("Microsoft.XMLDOM");
+			        xml.async = false;
+			        xml.loadXML(result);
+			      } else {
+			        xml = result;
+			      }
+			      var newFileName = gj(xml).find("name").text();
+			      if (newFileName) {
+			        fileName = newFileName;
+			      }
+			    }
+			  });
 		  	  var nodePath = (eXo.ecm.MultiUpload.drivePath.length <= 1 ? "":"/" + eXo.ecm.MultiUpload.drivePath) + 
 		  	  (eXo.ecm.MultiUpload.pathMap[progressID].length <= 1 ? "" : "/" + eXo.ecm.MultiUpload.pathMap[progressID]) +
-		  	  "/" + cleanName(file.name);
+		  	  "/" + fileName;
 				var icon = gj("#icon" + progressID, eXo.ecm.MultiUpload.document)[0];
 		  	  if (icon && eXo.ecm.MultiUpload.fileType[progressID].indexOf("image") != -1) {
 		  		  var iconHTMLForImageLoadFail = gj(icon).html();
