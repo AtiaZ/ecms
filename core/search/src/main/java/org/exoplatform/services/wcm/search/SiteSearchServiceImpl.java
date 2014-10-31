@@ -393,8 +393,8 @@ public class SiteSearchServiceImpl implements SiteSearchService {
       searchByNodeName(queryCriteria, queryBuilder);
     }
     mapCategoriesCondition(queryCriteria,queryBuilder);
-    mapDatetimeRangeSelected(queryCriteria,queryBuilder);
-    mapMetadataProperties(queryCriteria,queryBuilder, LOGICAL.AND);
+    mapDatetimeRangeSelected(queryCriteria, queryBuilder);
+    mapMetadataProperties(queryCriteria, queryBuilder, LOGICAL.AND);
     orderBy(queryCriteria, queryBuilder);
     String queryStatement = queryBuilder.createQueryStatement();
     Query query = queryManager.createQuery(queryStatement, Query.SQL);
@@ -673,8 +673,6 @@ public class SiteSearchServiceImpl implements SiteSearchService {
       }
     }
     queryBuilder.closeGroup();
-    
-    
     //unwanted document types: exo:cssFile, exo:jsFile
     if(excludeMimeTypes.size()<1) return;
     queryBuilder.openGroup(LOGICAL.AND_NOT);
@@ -689,6 +687,18 @@ public class SiteSearchServiceImpl implements SiteSearchService {
     queryBuilder.like("jcr:mixinTypes", "exo:cssFile", LOGICAL.NULL);
     queryBuilder.like("jcr:mixinTypes","exo:jsFile",LOGICAL.OR);
     queryBuilder.closeGroup();
+
+    queryBuilder.openGroup(LOGICAL.AND_NOT);
+    String[] _excludeNodeTypes = excludeNodeTypes.toArray(new String[]{});
+    for(int i=0; i < _excludeNodeTypes.length; i++) {
+      if(i==0) {
+        queryBuilder.equal("jcr:mixinTypes", _excludeNodeTypes[i], LOGICAL.NULL);
+      } else {
+        queryBuilder.equal("jcr:mixinTypes", _excludeNodeTypes[i], LOGICAL.OR);
+      }
+    }
+    queryBuilder.closeGroup();
+
   }
 
   /**
