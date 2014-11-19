@@ -43,6 +43,7 @@ import org.exoplatform.container.xml.ValueParam;
 import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.portal.config.UserACL;
 import org.exoplatform.portal.webui.util.Util;
+import org.exoplatform.services.cms.documents.TrashService;
 import org.exoplatform.services.cms.templates.TemplateService;
 import org.exoplatform.services.jcr.RepositoryService;
 import org.exoplatform.services.jcr.core.ManageableRepository;
@@ -73,7 +74,6 @@ import org.exoplatform.services.wcm.utils.AbstractQueryBuilder.PATH_TYPE;
 import org.exoplatform.services.wcm.utils.AbstractQueryBuilder.QueryTermHelper;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.application.portlet.PortletRequestContext;
-
 /**
  * The SiteSearchService component is used in the Search portlet that allows users
  * to find all information matching with your given keyword.
@@ -726,7 +726,8 @@ public class SiteSearchServiceImpl implements SiteSearchService {
 
     private boolean isSearchContent;
     private QueryCriteria queryCriteria;
-    
+    private TrashService trashService = WCMCoreUtils.getService(TrashService.class);
+
     public NodeFilter(boolean isSearchContent, QueryCriteria queryCriteria) {
       this.isSearchContent = isSearchContent;
       this.queryCriteria = queryCriteria;
@@ -735,6 +736,7 @@ public class SiteSearchServiceImpl implements SiteSearchService {
     @Override
     public Node filterNodeToDisplay(Node node) {
       try {
+        if(trashService.isInTrash(node)) return null;
         Node displayNode = getNodeToCheckState(node);
         if(displayNode == null) return null;
         if (isSearchContent) return displayNode;
