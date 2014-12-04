@@ -1175,18 +1175,17 @@
 
 /******** uiUnEditable **************/
 .uiUnEditable {
-	width: 380px;
 	margin: 0px auto;
 
 	.iconContainer {
-		float: left;
-		width: 100px;
-		text-align: right;
-		padding-top: 5px;
+		text-align: center;
+		.nameDoc {
+			display: block;
+			margin: 15px 0;
+		}
 	}
 
 	.detailContainer {
-		margin-left: 120px;
 		text-align: center;
 
 		span {
@@ -1198,7 +1197,11 @@
 		h4 {
 			color: @grayLight;
 			margin-top: 0px;
+			margin-bottom: 20px;
 			text-shadow: none;
+		}
+		button {
+			margin: 0 5px;
 		}
 	}
 }
